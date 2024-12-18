@@ -1,0 +1,37 @@
+#root {
+  max-width: 100%; /* Changed from 1280px */
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Update calendar container styles */
+.calendar-container {
+  width: 90%;
+  height: 75vh; /* Reduced from 80vh */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px; /* Reduced padding */
+  box-sizing: border-box;
+  margin-top: -2rem; /* Add negative margin to move it up slightly */
+}
+
+/* FullCalendar specific styles */
+.fc {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Reduce the header size of the calendar */
+.fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0.5em; /* Reduced from default */
+  font-size: 0.9em; /* Make the header text slightly smaller */
+}
+
+/* Make the calendar cells more compact */
+.fc .fc-daygrid-day-frame {
+  padding: 2px !important;
+}
+
+
