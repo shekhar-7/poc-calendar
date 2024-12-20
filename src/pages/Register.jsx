@@ -14,42 +14,35 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../utils/axiosClient";
 
-const Login = () => {
+const Register = () => {
   const [error, setError] = useState("");
   const { Formik } = formik;
   const navigate = useNavigate(); // Initialize useNavigate hook
 
   const schema = yup.object().shape({
+    firstName: yup.string().required("First name is required"),
+    lastName: yup.string().required("Last name is required"),
     email: yup.string().email("Invalid Email").required("Email is required"),
     password: yup
       .string()
-      // .min(8, "Password must be at least 8 characters")
-      // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-      // .matches(/[0-9]/, "Password must contain at least one number")
+      .min(8, "Password must be at least 8 characters")
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[0-9]/, "Password must contain at least one number")
       .required("Password is required"),
   });
 
-  const handleLogin = (logindata) => {
+  const handleRegister = (registerData) => {
     axiosClient
-      .post(`/api/v1/user/login`, {
-        ...logindata,
-        // deviceName: "desktop",
-      })
+      .post(`/api/v1/user/register`, registerData)
       .then((response) => {
-        // console.log("resp", response?.data?.accessToken);
-        localStorage.setItem(
-          "accessToken",
-          JSON.stringify(response?.data?.accessToken)
-        );
-        // localStorage.setItem("userData", JSON.stringify(response.data));
-        // setUser(response.data);
-        navigate("/");
-        // console.log("login response", response?.data?.accessToken);
+        console.log("Registration successful", response);
+        // Handle post-registration logic here (e.g., redirect, display success message, etc.)
       })
       .catch((error) => {
-        console.log("login error", error.message);
+        console.log("Registration error", error.response);
         setError(
-          error?.response?.data?.message || "An error occurred during login"
+          error?.response?.data?.message ||
+            "An error occurred during registration"
         );
       });
   };
@@ -68,19 +61,56 @@ const Login = () => {
             className="img-fluid my-5"
             style={{ maxWidth: "250px" }}
           />
-          {/* <h2 className="mb-4">Pixally</h2> */}
           {error && <Alert variant="danger">{error}</Alert>}
 
           <Formik
             validationSchema={schema}
-            onSubmit={(formData) => handleLogin(formData)}
+            onSubmit={(formData) => handleRegister(formData)}
             initialValues={{
-              password: "",
+              firstName: "",
+              lastName: "",
               email: "",
+              password: "",
             }}
           >
             {({ handleSubmit, handleChange, values, touched, errors }) => (
               <Form noValidate onSubmit={handleSubmit}>
+                <FloatingLabel
+                  controlId="floatingFirstName"
+                  label="First Name"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    placeholder="John"
+                    type="text"
+                    name="firstName"
+                    value={values.firstName}
+                    onChange={handleChange}
+                    isInvalid={touched.firstName && errors.firstName}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.firstName}
+                  </Form.Control.Feedback>
+                </FloatingLabel>
+
+                <FloatingLabel
+                  controlId="floatingLastName"
+                  label="Last Name"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    placeholder="Doe"
+                    type="text"
+                    name="lastName"
+                    value={values.lastName}
+                    onChange={handleChange}
+                    isInvalid={touched.lastName && errors.lastName}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.lastName}
+                  </Form.Control.Feedback>
+                </FloatingLabel>
+
                 <FloatingLabel
                   controlId="floatingEmail"
                   label="Email address"
@@ -92,7 +122,6 @@ const Login = () => {
                     name="email"
                     value={values.email}
                     onChange={handleChange}
-                    // isValid={touched.email && !errors.email}
                     isInvalid={touched.email && errors.email}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -111,7 +140,6 @@ const Login = () => {
                     name="password"
                     value={values.password}
                     onChange={handleChange}
-                    // isValid={touched.password && !errors.password}
                     isInvalid={touched.password && errors.password}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -119,20 +147,20 @@ const Login = () => {
                   </Form.Control.Feedback>
                 </FloatingLabel>
 
-                <Row className="gap-0">
-                  <Col md={6} className="text-center">
+                <Row className="w-100">
+                  <Col md={6}>
                     <Button type="submit" className="w-100">
-                      Login
+                      Register
                     </Button>
                   </Col>
-                  <Col md={6} className="text-center">
-                    <button
-                      className="btn btn-outline-primary w-100"
-                      type="button"
-                      onClick={() => navigate("/register")} // Navigate to register page
+                  <Col md={6}>
+                    <Button
+                      variant="outline-primary"
+                      className="w-100"
+                      onClick={() => navigate("/login")} // Navigate to login page
                     >
-                      Register
-                    </button>
+                      Login
+                    </Button>
                   </Col>
                 </Row>
               </Form>
@@ -144,4 +172,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

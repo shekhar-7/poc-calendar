@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setGoogleCredentials, logout } from "./googleLoginSlice";
 import { useGoogleLogin } from "@react-oauth/google";
 import { setGoogleEvents, clearGoogleEvents } from "../calendar/calendarSlice";
+
 const GoogleLoginComponent = () => {
   const dispatch = useDispatch();
   const { accessToken, user, isAuthenticated } = useSelector(
@@ -133,10 +134,18 @@ const GoogleLoginComponent = () => {
     }
   };
 
+  const openCalendly = () => {
+    const clientId = import.meta.env.VITE_CALENDLY_CLIENT_ID;
+    const redirectUrl = import.meta.env.VITE_CALENDLY_REDIRECT_URL;
+    const url = `https://calendly.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUrl}`;
+    window.open(url, "_blank"); // Open the URL in a new tab
+  };
+
   return (
     <div>
       <button onClick={() => login()}>Login with Google</button>
       {isAuthenticated && <button onClick={logOutFromGoogle}>Logout</button>}
+      <button onClick={() => openCalendly()}>Calendly</button>
     </div>
   );
 };
